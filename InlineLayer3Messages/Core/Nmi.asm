@@ -95,11 +95,6 @@ Initialisation:
 	REP #$30
 	LDA.w #Bg3Buffer
 	STA $04
-if !FastNmi
-    LDA !MessageVram
-    AND #~$001F
-    STA $00
-else
 	LDY #$0000
     LDA MirBG3YOFS
 	CLC : ADC #$0034
@@ -121,13 +116,10 @@ else
 	EOR #$07FF
 	INC
 	STA $02
-endif
 	SEP #$10
 	LDY MessageTimer
 	BEQ .leftHalf
-if !FastNmi
 	LDA $00
-endif
 	EOR #$0400
 	STA $00
 	LDA $04
