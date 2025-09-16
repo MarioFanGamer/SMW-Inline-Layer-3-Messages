@@ -1,4 +1,4 @@
-                     Inline Layer 3 Messages
+                  Inline Layer 3 Messages v1.1
                         by MarioFanGamer
                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -26,37 +26,117 @@ slots and graphics.
 In case of limitations, you might want to use the other
 patches.
 
-Why two ASM files?
+There's a whole folder of files!
 ----------------------------------------------------------
-I have separated the main and NMI code in case you want to
-insert the latter separately. In case you don't know, NMI
-is an interrupt (i.e. the current code is halted) which
-the SNES triggers at the start of v-blank. V-blank is the
-period where you can update the screen including writing
-to the tilemap.
-NMI code has got the issue that the places to hijack is
-limited which is why I preferably want to use UberASM
-instead of putting it together with the main patch. The
-insertion gets more complicated that way, though. You can
-disable the insertion of the NMI code with !HijackNmi and
-insert InlineMessageNmi.asm with UberASM for the NMI code
-for either game mode 14 or all the levels you want to use
-the a message. Use only one insertion method, though!
+The patch is fairly complex and with so many changes, you
+do lose an overview for all the stuff. Fortunately, most
+of it is irreleavant and the only releavnt user file is
+the patch file "InlineLayer3Message.asm" as well as
+"Messages.asm" inside "InlineLayer3Messages/GlobalMsg".
 
-Altogether, InlineLayer3Message.asm should always be
-patched with Asar, InlineMessageNmi.asm is either
-automatically inserted with the patch or inserted with
-UberASM depending on the patch's configuration.
+The former is the main patch file, the file you insert
+with Asar. It contains all the user customisations needed
+which is safe to do as such. There are more defines used
+in the patch but they're only interesting for technical
+users.
+The latter is the message file for global messages, only
+used when global messages are.
+
+How do I use global messages?
+----------------------------------------------------------
+Let's ask an easier question first.
+
+Any rules I need to take care for free RAM?
+----------------------------------------------------------
+Basically, some should be in shadow RAM, the other should
+be in WRAM only.
+The first four message defines is the RAM used by the
+vanilla system and doesn't NEED to be changed (although
+nothing stops you from doing so, of course).
+
+So... how do I use global messages in the first place?
+----------------------------------------------------------
+You first need to enable it (this is an exercise for you,
+the user on where to figure out).
+
+Once you've done that, you can define global messages
+however you want. They're found in the aforementioned
+"Messages.asm" file and the way it works is that a message
+consists of three parts: The initialiser, the message
+itself and the terminator. Altogether, a message
+generally looks like this:
+
+%GlobalMessageStart(nn)
+
+db "------------------"
+db "------------------"
+db "------------------"
+db "------------------"
+db "------------------"
+db "------------------"
+db "------------------"
+db "------------------"
+
+%GlobalMessageEnd()
+
+Here is each function in detail:
+- %GlobalMessageStart(nn) is the message initialiser.
+  All it does is to set the message label by the given
+  value specified in nn (values are in hex but without
+  the '$' so 0A is valid but $42 isn't). By default,
+  the valid range is 00-FB.
+- %GlobalMessageEnd() is the terminator. It controls the
+  result and automatically places the terminator if there
+  are fewer than 144 characters but also warn you, the
+  user should there be more than 144 characters in a
+  single message.
+- The "db" lines is the message itself. A single message
+  consists of 144 characters, split over 8 lines with 18
+  characters each. Line breaks are handled by the game
+  itself so having more or fewer characters then
+  specified *will* break the message structure.
+  You can also enter the character values directly for
+  special characters like Yoshi's pawprint.
+  In order to do this, stop the string with a quote '"',
+  add a comma, and write the character number directly
+  (remember: Without '$' = decimal, with '$' = hex).
+  You can write consecutive numbers separated by comma and
+  restart a string with a comma and then quote.
+  In other words, it should look something like this:
+  "...",$42,$13,$37,"..."
+  For example, the last line of Yoshi's message in
+  Yoshi's House looks like this in Lunar Magic:
+  "         - Yoshi\62\63"
+  For the patch, the equivalent is this:
+  "         - Yoshi",$62,$63
+
+To call a global message, write the $nn+4 value to
+!MessageState in a different code (e.g. a custom info
+box).
+One vanilla method is to stack multiple level message
+comands on top of each other which increment the
+message number by one each but other then that, you need
+to use custom code to call these messages.
+The reason it's +4 is because 0 is no message (although
+you could make changes to SMW so that !MessageState is
+the message trigger, leaving !MessageNumber purely as
+the message to display), 1 is the first level message,
+2 is the second level message and 3 the Yoshi hatching
+message (arguably the ORIGINAL global message), leaving
+4 as the first free number for custom messages.
+This system is familiar to any user of BG4VWF where
+global messages are called in a similar way (though this
+patch still handles Yoshi like vanilla due to LM message
+compatibility).
 
 I can't use the patch!
 ----------------------------------------------------------
 I can think of two causes:
- - You didn't put InlineMessageNmi.asm in the same folder
-   as InlineLayer3Message.asm and have the NMI code
-   enabled or
+ - You didn't put in the "InlineLayer3Messages" folder
+   in the same folder as "InlineLayer3Message.asm" or
  - you didn't save a message in Lunar Magic at least once.
 
-Who can read the error messages has got a clear advantage.
+Who can read error messages has got a clear advantage.
 
 Any known incompatibilities?
 ----------------------------------------------------------
@@ -65,20 +145,46 @@ tilemap uses tiles from the top half of page 2 is where
 you might get into trouble but these can be remapped.
 Regarding vanilla SMW? I made sure to add all
 functionalities, from the Yoshi's House message to Switch
-Palace messages.
+Palace messages, although strictly speaking, this only
+applies to SMW edited by Lunar Magic.
+It is possible to modify the original code but the
+advantages thereof are limited since most people use
+Lunar Magic.
+
 I even made sure it also works with colour addition (that
 includes the ghost house mist as well as level modes 1E
-and 1F) but colour subtraction with layer 3 on subscreen
-is unfortunatelly impossible to solve.
-HDMA depends: Layer 3 position? Can be forgotten
+and 1F) but colour half-addition and subtraction with
+layer 3 on subscreen is unfortunatelly difficult to solve
+(it requires layer 3 to be on mainscreen but SMW by
+default doesn't use the main/subscreen mirrors to easily
+handle that, alongside separate mirros for windowing on
+main and subscreeen).
+
+HDMA, depends: Layer 3 position? Can be forgotten
 immediately. Windowing? Since the message still uses
 windowing, they should be avoided as well. Anything else
 (including what is commonly understood as HDMA i.e.
-colour gradients) still work.
+colour gradients) still works.
+
 Retry? There are some complications between Retry and
 message box patches. However, I actually planned this
 with retry, though you have to enable Retry compatibility
-in InlineMessageNmi.asm.
+in the settings.
+What doesn't work, though, are global messages. This is
+because retry uses the message numbers to determine its
+state. This doesn't mean global messages can't work with
+retry ever but it does mean you need a separate message
+number for global messages. I didn't include such a
+compatibility because doing so means I need to make some
+additional hijacks with the Yoshi message and also
+guarantees modification for all other message code,
+alongside taking some freeRAM in the shadow RAM area
+(which is sparse and suitable for individual variables
+than the bulk this patch uses).
+(This also is one of the reasons why the NMI code
+originally isn't as optimised as it can be because I
+need two bytes of freeRAM to preserve the VRAM position.)
+
 Message box patches should be generally avoided because
 my patch writes messages differently than these patches
 do. This includes patches which modify the intro message
@@ -86,7 +192,8 @@ do. This includes patches which modify the intro message
 I also have included as an option for this very reason).
 This doesn't mean you can't use patches which add
 another message system (such as VWF Dialogues), they just
-can't replace vanilla messages.
+can't replace vanilla messages (in fact, you don't need
+them all the time either).
 
 Can I use the goal with layer 3 backgrounds as well?
 ----------------------------------------------------------
@@ -100,7 +207,7 @@ the vanilla game (excluding custom layer 3 backgrounds,
 of course).
 
 Oh, and give credits to allowiscous, imamelia, Berk and
-Link13 for layer 3 conversions of some of SMW's
+Link13 for layer 3 conversions for some of SMW's
 layer 2 backgrounds!
 
 The message box glitches for one frame!
@@ -110,7 +217,7 @@ how unoptimised SMW's stripe image routine is. 10 writes
 on a single scanline is certainly much for SMW (same
 reason why the background might glitch if you enable a
 32x32 block and have HDMA active). I'd say it's a
-necessary trade off without making the patch any more
+necessary tradeoff without making the patch any more
 complex that it currently is.
 
 Do I must give you credits?
@@ -119,9 +226,9 @@ Appreciable but not necessary.
 
 Why did you make this patch?
 ----------------------------------------------------------
-Curiosity in how Yoshi's Island, of which part of the
-patch's code is based of, since it also uses message
-boxes in levels with layer 3 images.
+Curiosity in how Yoshi's Island handles its messages, of
+which part of the patch's code is based of, since it also
+uses message boxes in levels with layer 3 images.
 
 I've got a question!
 ----------------------------------------------------------
@@ -138,8 +245,7 @@ bar if a message is active (no such luck for custom status
 bars, you have to do it on your own) if a message is
 active. Even then, it won't fix the issue altogether but
 it does make it appear less likely. The alternative is to
-use a stripe image optimiser but as of right know, I can't
-think of a patch which does that.
+use a stripe image optimiser.
 
 Changelog
 ----------------------------------------------------------
@@ -153,3 +259,9 @@ Changelog
  - Added SA-1 Pack v1.35+ compatibility (the one which
    remaps DMA).
  - Fixed some spelling errors.
+
+1.1.0:
+ - Fixed errors appearing in FastROM
+ - Fixed ejected !-blocks being always yellow when the
+   !-blocks in messages are disabled.
+ - Added global messages

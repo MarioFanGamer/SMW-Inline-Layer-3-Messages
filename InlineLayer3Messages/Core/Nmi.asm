@@ -1,19 +1,27 @@
-; Same as in the patch
-!MessageState	= $1B88|!addr
-!MessageTimer	= $1B89|!addr
+print " Message NMI code: $",pc
 
-!Layer3Buff = $7FA600	; 1024 bytes since we want to restore it
-
-nmi:
+HijackNmi:
 	PHB
 	PHK
 	PLB
-	LDX !MessageState
-	JSR (.States,x)
+	if !NmiFixRetry
+		LDA MessageNumber   
+		CMP #$04
+		BCS .Return
+	endif
+	LDX MessageState
+	JSR (MessageStates,x)
+.Return
 	PLB
-RTL
+    
+; Restore
+	LDA $143A|!addr
+	BEQ +
+JML $008212|!bank
++
+JML $008217|!bank
 
-.States:
+MessageStates:
 dw .Return
 dw .BackupLayer3
 dw .Return
@@ -21,6 +29,7 @@ dw .Return
 dw .RestoreLayer3
 dw .Return
 
+; Backs up the row of layer 3.
 .BackupLayer3:
 	JSR Initialisation
 	BCC ..TwoReads
@@ -75,15 +84,25 @@ RTS
 RTS
 
 ; Initialises the read/write by getting the VRAM address as well as set the state.
+; Output:
+;  $00: VRAM address of message
+;  $02: Rows to upload * 2
+;  $04: Pointer to buffer
+;  C: Set if message doesn't write through the subtilemap border
 Initialisation:
 	LDA #$80
 	STA $2115
 	REP #$30
-	LDA #!Layer3Buff
+	LDA.w #Bg3Buffer
 	STA $04
+if !FastNmi
+    LDA !MessageVram
+    AND #~$001F
+    STA $00
+else
 	LDY #$0000
-	LDA $24
-	CLC : ADC #$0034	; 40 pixels to the bottom
+    LDA MirBG3YOFS
+	CLC : ADC #$0034
 	BIT #$0100
 	BEQ +
 	INY #2
@@ -93,31 +112,34 @@ Initialisation:
 	STA $00
 	TYA
 	XBA
-	ASL #2				; Y << 10
+	ASL #2				    ; Y << 10
 	ORA $00
-	ORA #$5000
+	ORA #!Layer3Tilemap
 	STA $00
 	PLA
 	ASL
 	EOR #$07FF
 	INC
 	STA $02
+endif
 	SEP #$10
-	LDY !MessageTimer
+	LDY MessageTimer
 	BEQ .leftHalf
+if !FastNmi
 	LDA $00
+endif
 	EOR #$0400
 	STA $00
 	LDA $04
 	CLC : ADC #$0280
 	STA $04
-	LDA !MessageState
+	LDA MessageState
 	INC
 	INC
-	STA !MessageState
+	STA MessageState
 .leftHalf
 	LDY #$50
-	STY !MessageTimer
+	STY MessageTimer
 	LDA $02
 	CMP #$0280
 RTS
@@ -135,7 +157,7 @@ ReadLayer3:
 	STA $4300
 	LDA $04
 	STA $4302
-	LDY.b #!Layer3Buff>>16
+	LDY.b #bank(Bg3Buffer)
 	STY $4304
 	LDA $02
 	STA $4305
@@ -155,7 +177,7 @@ WriteLayer3:
 	STA $4300
 	LDA $04
 	STA $4302
-	LDY.b #!Layer3Buff>>16
+	LDY.b #bank(Bg3Buffer)
 	STY $4304
 	LDA $02
 	STA $4305
