@@ -42,6 +42,14 @@ users.
 The latter is the message file for global messages, only
 used when global messages are.
 
+Lastly, there is the good ol' UberASM folder. This
+contains the NMI code, the code which backs up the
+tilemap.
+It should only be inserted if you have "!HijackNmi"
+disabled, though, because doing so means doing work twice
+which wastes v-blank (and GUARANTEES black bars to
+appear).
+
 How do I use global messages?
 ----------------------------------------------------------
 Let's ask an easier question first.
@@ -50,9 +58,45 @@ Any rules I need to take care for free RAM?
 ----------------------------------------------------------
 Basically, some should be in shadow RAM, the other should
 be in WRAM only.
+
 The first four message defines is the RAM used by the
 vanilla system and doesn't NEED to be changed (although
-nothing stops you from doing so, of course).
+nothing stops you from doing so, of course) so you
+can't really call these freeRAM defines.
+
+What is freeRAM, though, is "!MessageVram", a variable
+which preserves the VRAM destination for the message for
+faster code (particularly important because some of it
+runs in v-blank, the period where the screen can be
+updated). It needs to be two bytes (VRAM is a 16-bit
+address) and preferably be in shadow WRAM (the
+$0000-$1FFF range) and needs to be attached with a
+"|!addr" for full SA-1 compatibility.
+This is only used when "!FastNmi" is enabled (and I
+recommend this due to the aforementioned v-blank
+limitation).
+
+"!MessageBuff" is the message buffer and contains the
+message itself. It's 144 bytes large (8 rows, 18 columns)
+and contains the final message since it can be compressed
+in the ROM.
+This variable is recommend to be in WRAM ($7E0000-$7FFFFF)
+even if you use SA-1 because neither code in the patch is
+processed by SA-1 (basically, changing it to banks $40/$41
+is a waste of the more limited BW-RAM).
+
+"!Layer3Buff" is the buffered part of the layer 3 tilemap,
+the rows were the message get overwritten.
+This variable is recommend to be in WRAM even if you use
+SA-1 because it's only needed for v-blank code which
+can't run in SA-1.
+
+It should be noted that this RAM is only needed when a
+message runs so if you can make sure you won't
+(accidentally) trigger a message, you can use these as
+freeRAM in other places (e.g. using it as an HDMA table,
+especially with HDMA which can't work with messages
+anyway).
 
 So... how do I use global messages in the first place?
 ----------------------------------------------------------
@@ -182,8 +226,9 @@ alongside taking some freeRAM in the shadow RAM area
 (which is sparse and suitable for individual variables
 than the bulk this patch uses).
 (This also is one of the reasons why the NMI code
-originally isn't as optimised as it can be because I
-need two bytes of freeRAM to preserve the VRAM position.)
+originally wasn't as optimised as it could be because
+I need two bytes of freeRAM to preserve the VRAM
+position.)
 
 Message box patches should be generally avoided because
 my patch writes messages differently than these patches
@@ -223,6 +268,19 @@ complex that it currently is.
 Do I must give you credits?
 ----------------------------------------------------------
 Appreciable but not necessary.
+
+But... but... The license!
+----------------------------------------------------------
+This only applies if you distribute the source code,
+intended for when you modify this patch and want to merge
+the code back to the repo or take code FROM it and create
+your own public patch with it.
+This is different to most other BSD licenses (BSD0 as the
+notable exception) which require attribution/license
+inclusion even for binary distributions which is overkill
+for SMW hacking.
+
+tl;dr Don't mind this for non-code products.
 
 Why did you make this patch?
 ----------------------------------------------------------
@@ -264,4 +322,5 @@ Changelog
  - Fixed errors appearing in FastROM
  - Fixed ejected !-blocks being always yellow when the
    !-blocks in messages are disabled.
+ - Fixed incompatibility with Peach cutscene when using NMI code through UberASM
  - Added global messages
