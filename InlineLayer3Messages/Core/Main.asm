@@ -1,3 +1,5 @@
+includefrom "InlineLayer3Messages"
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ; Inline Layer 3 Messages main patch
@@ -5,16 +7,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ; This file handles the main part of drawing the message,
-; both window and tilemap.
+; decompression, window and stripe image, as well as
+; handling any player interaction.
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-; Correct position in pixels
-!tmp_mask #= $10000-!TileSize
-
-undef "tmp_mask"
-
-incsrc "Hijacks.asm"
 
 print " Message main code: $",pc
 
@@ -51,7 +47,7 @@ dw .Shrink
     BEQ +
     LDA #$20            ; Don't mask out sprites if a switch message.
 +   STA MirWOBJSEL
-    
+
     JSR GenerateWindow
     LDA MessageTimer
     CMP #$50
@@ -65,11 +61,42 @@ RTS
     INC #2
     STA MessageState
     STZ MessageTimer
+
+; Reduce repeated calculations by calculating the VRAM position only once.
+if !FastNmi
+    ; Get VRAM Address
+    REP #$30
+    LDY #$0000
+    LDA $22
+    CLC : ADC #$0034
+    BIT #$0100          ; Is on right half?
+    BEQ +
+    INY
++   LSR #3
+    AND #$001F
+    STA $00
+    LDA $24
+    CLC : ADC #$0034
+    BIT #$0100          ; Is on bottom half?
+    BEQ +
+    INY #2
++   ASL #2
+    AND #$03E0
+    ORA $00
+    STA $00
+    TYA
+    XBA
+    ASL #2              ; Y << 10
+    ORA $00
+    ORA #!Layer3Tilemap
+    STA !MessageVram
+    SEP #$30
+endif
 RTS
 
 ; Writes the message into a buffer and also into the tilemap.
 ; This process is buffered: If the message is split into two
-; frames, 
+; frames,
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 .GenerateMessage:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -108,7 +135,8 @@ BRA ..NormalMessage
     ASL
     TAX
     LDA MessageTimer        ; Saves one byte+cycle
-    PEA.w (bank(MessageBuffer))|(bank(NewMessageSystem)<<8)
+    PEA.w bank(MessageBuffer)|(bank(NewMessageSystem)<<8)
+    bank bank(MessageBuffer)
     PLB
     AND #$0001
     BNE ..Shared
@@ -139,7 +167,7 @@ endif
 -   LDA [$00],y
     CMP #!MessageTerminator ; If character is the message terminator: Reached the end of message
     BEQ ..Empty
-    STA.w MessageBuffer,y
+    STA MessageBuffer,y
     INY
     CPY #$0090
     BNE -
@@ -147,14 +175,17 @@ endif
 
 ..Empty:
     LDA #!EmptyTile
--   STA.w MessageBuffer,y
+-   STA MessageBuffer,y
     INY
     CPY #$0090
     BNE -
-    
+
 ..Shared:
     REP #$30
 
+if !FastNmi
+    LDA MessageVram
+else
     ; Get VRAM Address
     LDY #$0000
     LDA MirBG3XOFS
@@ -179,6 +210,7 @@ endif
     ASL #2              ; Y << 10
     ORA $00
     ORA #!Layer3Tilemap
+endif
     STA $00
 
     ; Get left side's width.
@@ -207,6 +239,7 @@ endif
     TXA
     STA StripeIndex
     PLB
+    bank auto
     SEP #$30
     INC MessageTimer
 RTS
@@ -216,6 +249,7 @@ RTS
 ; - Increment the text buffer by the current box with - 1 (because of the border)
 ; - Decrement the full width by the current width
 ..RightSide:
+    bank bank(MessageBuffer)
     LDA.w #MessageBuffer
     CLC : ADC $02
     DEC
@@ -236,6 +270,7 @@ RTS
     STA StripeIndex
 ..SingleSide:
     PLB
+    bank auto
 
 ; Initialise next state
     SEP #$30
@@ -248,7 +283,7 @@ RTS
     LDA MirTM               ; ... but only if layer 3 is on subscreen
     AND #$04                ;
     BEQ +                   ;
-    LDY #$22                ; Disable subscreen instead. 
+    LDY #$22                ; Disable subscreen instead.
 +   STY MirCGWSEL           ; Handles both colour maths and subscreen layer 3.
     LDX #$00                ;
     LDA GameTranslevel      ; Check for switch palace levels.
@@ -292,7 +327,7 @@ RTS
 
     LDA GameLevelOverride
     ORA SwitchColour
-    BEQ ..NotSpecial    
+    BEQ ..NotSpecial
     LDA MessageWait
     BEQ ..NotSpecial
     LDA GameFramecounterA
@@ -311,7 +346,7 @@ RTS
     LDA #$0B
     STA GameMode
 RTS
-    
+
 ..NotSpecial:
 if !AutomaticIntro
     LDA GameLevelOverride
@@ -363,7 +398,7 @@ RTS
     BNE GenerateWindow      ; Not quite stable in that it expects the subroutines to be inserted right after the main code
     STZ MessageNumber
     STZ MessageState
-    LDA #$80
+    LDA.b #1<<!WindowHdmaChannel
     TRB MirHDMAEN
 RTS
 

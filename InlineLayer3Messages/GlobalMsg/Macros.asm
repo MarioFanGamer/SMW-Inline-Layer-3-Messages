@@ -1,3 +1,5 @@
+include
+
 ; Some temporary defines used by global messages
 !GlobalMessage_LargestID = $00
 

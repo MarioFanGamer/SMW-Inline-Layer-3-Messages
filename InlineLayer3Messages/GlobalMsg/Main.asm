@@ -1,9 +1,11 @@
+includefrom "InlineLayer3Messages"
+
 incsrc "Macros.asm"
 incsrc "Characters.asm"
 
 !CurrentMessageID = $10000
 
-incsrc "Messages.asm"
+incsrc "../Messages.asm"
 
 if !CurrentMessageID < $10000
     error "Message !CurrentMessageID is missing its terminator."
