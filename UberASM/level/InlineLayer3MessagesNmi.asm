@@ -64,8 +64,8 @@ optimize address mirrors
 nmi:
     LDA MessageNumber       ; Checks for an active message to 
     BEQ .Return
-    if !NmiFixRetry
-        CMP #$04
+    if !FixRetry
+        CMP #$08            ; First retry value is 08
         BCS .Return
     endif
     LDX MessageState

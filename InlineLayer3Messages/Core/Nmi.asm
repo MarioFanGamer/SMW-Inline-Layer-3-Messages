@@ -1,12 +1,25 @@
 includefrom "InlineLayer3Messages"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; Inline Layer 3 Messages NMI code
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; This file handles the v-blank code for the patch.
+; All it does is to preserve and restore the portion of
+; the tilemap where the message appears.
+; An UberASM alternative also exists as a separate file.
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 print " Message NMI code: $",pc
 
 HijackNmi:
     LDA MessageNumber       ; Checks for an active message to prevent the game from crashing by other uses of MessageState
     BEQ .Return
-    if !NmiFixRetry
-        CMP #$04
+    if !FixRetry
+        CMP #$08            ; First retry value is 08
         BCS .Return
     endif
     PHB
@@ -93,9 +106,9 @@ RTS
 
 ; Initialises the read/write by getting the VRAM address as well as set the state.
 ; Output:
-;  $00: VRAM address of message
-;  $02: Rows to upload * 2
-;  $04: Pointer to buffer
+;  $00 (16-bit): VRAM address of message
+;  $02 (16-bit): Rows to upload * 2
+;  $04 (16-bit): Pointer to buffer
 ;  C: Set if message doesn't write through the subtilemap border
 Initialisation:
     LDA #$80
@@ -154,13 +167,13 @@ RTS
 
 ; Reads a subtilemap row
 ; Input:
-;  $00: VRAM address to read
-;  $02: Rows to upload * 2
-;  $04: Pointer to buffer
+;  $00 (16-bit): VRAM address to read
+;  $02 (16-bit): Rows to upload * 2
+;  $04 (16-bit): Pointer to buffer
 ReadLayer3:
     LDA $00
     STA $2116
-    LDA $2139
+    LDA $2139               ; Need to read one byte due to VRAM quirks
     LDA #$3981
     STA $4300
     LDA $04
@@ -176,9 +189,9 @@ RTS
 
 ; Writes to a subtilemap row
 ; Input:
-;  $00: VRAM address to write
-;  $02: Rows to upload * 2
-;  $04: Pointer to buffer
+;  $00 (16-bit): VRAM address to write
+;  $02 (16-bit): Rows to upload * 2
+;  $04 (16-bit): Pointer to buffer
 WriteLayer3:
     LDA $00
     STA $2116

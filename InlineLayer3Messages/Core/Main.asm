@@ -401,11 +401,3 @@ RTS
     LDA.b #1<<!WindowHdmaChannel
     TRB MirHDMAEN
 RTS
-
-incsrc "Subroutines.asm"
-
-if !HijackNmi
-
-incsrc "Nmi.asm"
-
-endif

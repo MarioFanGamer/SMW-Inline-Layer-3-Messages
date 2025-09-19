@@ -1,5 +1,11 @@
 include
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; Inline Layer 3 Messages internal defines
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ; Misc defines
 function GetYXPCCCTT(char, pal, prio, xflip, yflip) = \
          ((char&$300)>>8)\
@@ -79,6 +85,6 @@ ExclamationMarkOffsets = $05B2DB|!bank
 
 !Layer3Tilemap = $5000
 !MessageTerminator = $FE
-!GlobalMessage_MaxMessages = $FC
+!GlobalMessage_MaxMessages #= select(!FixRetry,$04,$FD)
 
-!WindowHdmaChannel #= (read1($0092D7+1)&$F0)
+!WindowHdmaChannel = 7

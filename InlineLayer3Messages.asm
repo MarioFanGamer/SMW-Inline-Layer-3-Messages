@@ -63,6 +63,15 @@ incsrc "InlineLayer3Messages/Settings.asm"
 
 incsrc "InlineLayer3Messages/Core/Defines.asm"
 
+if !FixRetry && !GlobalMessages
+    print " Total amount of custom global messages limited to five messages."
+    !GlobalMessages = 0
+endif
+
+if not(!FastNmi)
+    warn "\!FastNmi has been disabled. It's recommend to have this enable to reduce black bars / HDMA messing up when a message (dis)appears."
+endif
+
 freecode
 if !GlobalMessages
 prot GlobalMessageSystem
@@ -71,7 +80,9 @@ endif
 incsrc "InlineLayer3Messages/Core/Hijacks.asm"
 incsrc "InlineLayer3Messages/Core/Main.asm"
 incsrc "InlineLayer3Messages/Core/Subroutines.asm"
+if !HijackNmi
 incsrc "InlineLayer3Messages/Core/Nmi.asm"
+endif
 
 if !GlobalMessages
 

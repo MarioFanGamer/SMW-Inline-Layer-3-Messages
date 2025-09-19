@@ -1,5 +1,11 @@
 pushpc
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; Inline Layer 3 Messages hijacks
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 org $05B10C
 autoclean JML NewMessageSystem
 
