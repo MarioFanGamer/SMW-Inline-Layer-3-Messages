@@ -6,7 +6,7 @@ autoclean JML NewMessageSystem
 ; Make the table relative offsets only
 org ExclamationMarkOffsets
 db $00,$00,$08,$00,$00,$08,$08,$08
-db $40,$00,$48,$00,$40,$08,$48,$08
+db $42,$00,$4A,$00,$42,$08,$4A,$08
 
 if !HijackNmi
 

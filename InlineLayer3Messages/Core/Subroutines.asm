@@ -1,14 +1,32 @@
 includefrom "InlineLayer3Messages"
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; Inline Layer 3 Messages subroutines
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
+; Contains all the important and (common) routines outside
+; the main code.
+;
+; Due to some quirks / optimisations in the main code,
+; this MUST be inserted immediately afterwards.
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ; Generates a window
 ; This is different from the original SMW code in that the windowing position
 ; is relative to the layer BG3 position (more specifically, the position within a single tile
 ; to keep it aligned with the tilemap).
+; Uses:
+;   $00 (8-bit): Window centre X position
+;   $01 (16-bit): Pointer to lower half of the windowing table
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 GenerateWindow:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 print " GenerateWindow subroutine: $",pc
 
+    ; Get centre of message
     LDA MirBG3XOFS
     AND #$07
     CMP #$04
@@ -19,7 +37,9 @@ print " GenerateWindow subroutine: $",pc
     CLC : ADC #$88          ; 0x80 + 8
     STA $00
     REP #$20
-    LDA MirBG3YOFS          ; Get offset
+    
+    ; Get table pointer
+    LDA MirBG3YOFS
     AND #$0007
     CMP #$0004
     BCS +
@@ -35,8 +55,9 @@ print " GenerateWindow subroutine: $",pc
     CLC : ADC.w #WindowBuffer
     STA $01                 ; Indirect because Y is also the loop count.
 
+    ; Get edges
     SEP #$20
-    LDA $00                 ; Get edges
+    LDA $00
     DEC
     CLC : ADC MessageTimer
     XBA
@@ -71,6 +92,9 @@ RTS
 ; although this also takes the block colour as an additional input.
 ; Inputs:
 ;   X: !-block colour index
+; Uses:
+;   $00 (8-bit): Left !-block screen X position
+;   $01 (8-bit): Left !-block screen Y position
 if !EnableSwitchPalace
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 DrawExclamationBlocks:
@@ -80,38 +104,38 @@ print " DrawExclamationBlocks subroutine: $",pc
     TXA
     ASL #4
     TAX
-    STZ $00
     LDA MirBG3XOFS
     AND #$07
     CMP #$04
     BCS +
     ORA #$08
 +   EOR #$FF
-    INC
-    CLC : ADC #$4C          ; 0x4C + 8
+    ;INC : CLC
+    SEC : ADC #$58          ; 0x48 + 8
     STA $00
-    LDA MirBG3YOFS          ; Get offset
+    LDA MirBG3YOFS
     AND #$07
     CMP #$04
     BCS +
     ORA #$08
-+   EOR #$FFFF
-    INC
-    CLC : ADC #$5F          ; 0x58 + 8 - 1
++   EOR #$FF
+    ;INC : CLC
+    SEC : ADC #$5F          ; 0x48 + 8 - 1
+    STA $01
     REP #$20
     LDY #$1C
 .Loop
     LDA ExclamationMarkTiles-16,x
     STA $0202|!addr,y
     PHX
-    LDX $00
+    TXA
+    AND #$000F
+    TAX
     LDA ExclamationMarkOffsets,x
-    CLC : ADC $01
+    CLC : ADC $00
     STA $0200|!addr,y
     PLX
     INX #2
-    INC $00
-    INC $00
     DEY #4
     BPL .Loop
     STZ $0400|!addr
@@ -120,17 +144,25 @@ RTS
 endif
 
 
-; Draws the tiles
-; Not that this expects
+; Draws the message tiles to tilemap
+; Note that this expects the bank to be that of
+; the message source since it's 16-bit.
+; It may actually be faster to have the DB at
+; the stripe bank but since this runs and use
+; a 24-bit pointer for the message source instead
+; (or use X for the message and pointers+Y for stripe
+; instead), but since this code only runs at two
+; frames at most when everything is paused, the
+; effort isn't really worth it.
 ; Input:
-;   $00: Leftmost VRAM address
-;   $02: Total columns to place
-;   $04: Message pointer (high byte in DB)
-;   $06: Which side to place.
+;   $00 (16-bit): Leftmost VRAM address
+;   $02 (16-bit): Total columns to place
+;   $04 (16-bit): Message pointer (high byte in DB)
+;   $06 (16-bit): Which side to place.
 ; Uses:
-;   $08: VRAM address in use
-;   $0A: Row count
-;   $0C: Loop count (columns)
+;   $08 (16-bit): VRAM address in use
+;   $0A (16-bit): Row count
+;   $0C (16-bit): Loop count (columns)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 PlaceTiles:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -152,11 +184,11 @@ print " PlaceTiles subroutine: $",pc
     STA StripeQueue+2,x
     INX #4
     
-    ; Check if it's the up- or bottom most row.
+    ; Check if it's the top or bottom most row.
     ; I know that RLE is smaller but it doesn't appear to upload faster
     ; than having it all decompressed.
     ; Really, all I'm doing is to take up more RAM which is only used up
-    ; for a single frame.
+    ; for a single frame (and it also makes adding corner tiles easier).
     LDA $0A
     BEQ .EmptyTiles
     CMP #$0009
