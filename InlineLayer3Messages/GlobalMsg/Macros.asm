@@ -27,7 +27,7 @@ endif
 
 !GlobalMessagePos #= pc()
 
-!{GlobalMessage_!{temp_message_id}_label}:
+!CurrentMessageName:
 
 undef "temp_message_id"
 endmacro
@@ -41,8 +41,6 @@ if !CurrentMessageID >= $10000
 endif
 
 !GlobalMessageLen #= pc()-!GlobalMessagePos
-
-print "Message !CurrentMessageID length: $",hex(!GlobalMessageLen)," bytes"
 
 ; Check the message length.
 ; If less than 90 characters, place a terminator at the end

@@ -1,3 +1,5 @@
+include
+
 ;Character table
 'A' = $00
 'B' = $01
@@ -60,6 +62,7 @@
 '#' = $5A
 '(' = $5B
 ')' = $5C
+''' = $5D : ''' = $5D	; This looks funny to work around an Asar bug
 '1' = $64
 '2' = $65
 '3' = $66

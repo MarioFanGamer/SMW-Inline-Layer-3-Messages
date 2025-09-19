@@ -150,14 +150,18 @@ if !GlobalMessages
 BRA ..MessageShared
 
 ..LoadGlobalMessage:
-    REP #$20
+    PEA.w bank(MessageBuffer)|(bank(NewMessageSystem)<<8)
+    PLB
+    REP #$30
     TXA
     ASL
-    CLC : ADC GlobalMessagePtrs-8,x
+    TAX
+    LDA GlobalMessagePointers-8,x
     STA $00                 ; Always load an empty message if no message has been defined
     BEQ ..Empty
-    LDY.b #bank(GlobalMessages)
-    STA $02
+    SEP #$10
+    LDY.b #bank(GlobalMessagePointers)
+    STY $02
     LDY #$00                ; High byte of Y is always clear when Y is 8-bit
     REP #$10
 

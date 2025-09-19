@@ -1,5 +1,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
+; Inline Layer 3 Messages user settings
+;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;
 ; This file is the main insertion file and includes all
 ; the user settings necessary to modify this patch.
 ; The actual patch is found inside the folder
@@ -41,7 +45,7 @@
 ; Other defines
 !EnableSwitchPalace = 1             ; If set to 1: Display dotted and exclamation mark blocks on switch palace messages.
 !HijackNmi          = 1             ; If set to 1: Handle NMI code with this patch (requires UberASM if disabled).
-!NmiFixRetry        = 1             ; If set to 1: Fixes incompatibilities with Retry when using the NMI hijack.
-!FastNmi            = 1             ; If set to 1: Uses two bytes of freeRAM to reduce calculations with message position in tilemap
+!FixRetry           = 1             ; If set to 1: Fixes incompatibilities with Retry when using the NMI hijack.
+!FastNmi            = 0             ; If set to 1: Uses two bytes of freeRAM to reduce calculations with message position in tilemap
 !AutomaticIntro     = 0             ; If set to 1: Don't wait for player input in the intro.
 !GlobalMessages     = 0             ; If set to 1: Enable the use of global messages.

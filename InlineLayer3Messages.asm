@@ -64,7 +64,7 @@ incsrc "InlineLayer3Messages/Settings.asm"
 incsrc "InlineLayer3Messages/Core/Defines.asm"
 
 if !FixRetry && !GlobalMessages
-    print " Total amount of custom global messages limited to five messages."
+    print " Total amount of custom global messages limited to four messages."
     !GlobalMessages = 0
 endif
 
