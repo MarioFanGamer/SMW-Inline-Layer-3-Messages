@@ -34,7 +34,7 @@ ControllerAPressed = $000016|!dp
 ControllerBHeld = $000017|!dp
 ControllerBPressed = $000018|!dp
 
-GameFramecounterA = $13
+GameFramecounterA = $000013|!dp
 GameMode = $000100|!addr
 GameTranslevel = $0013BF|!addr
 GameLevelOverride = $000109|!addr
@@ -87,4 +87,4 @@ ExclamationMarkOffsets = $05B2DB|!bank
 !MessageTerminator = $FE
 !GlobalMessage_MaxMessages #= select(!FixRetry,$04,$FD)
 
-!WindowHdmaChannel = 7
+!WindowHdmaChannel = select(!sa1,1,7)
