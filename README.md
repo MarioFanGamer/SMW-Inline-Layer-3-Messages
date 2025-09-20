@@ -72,13 +72,13 @@ Demo:
 - Levels: MarioFanGamer
 - Messages: MarioFanGamer
 - Layer 3 conversions of SMW graphics:
- - [Blue Mountains](https://www.smwcentral.net/?p=section&a=details&id=13031): S.R.H.
- - [Cave](https://www.smwcentral.net/?p=section&a=details&id=13197): Link13
- - [Clouds](https://www.smwcentral.net/?p=section&a=details&id=2544): allowiscous, imamelia
- - [Castle Pillars](https://www.smwcentral.net/?p=section&a=details&id=13029): S.R.H.
- - Original graphics: Nintendo
+  - [Blue Mountains](https://www.smwcentral.net/?p=section&a=details&id=13031): S.R.H.
+  - [Cave](https://www.smwcentral.net/?p=section&a=details&id=13197): Link13
+  - [Clouds](https://www.smwcentral.net/?p=section&a=details&id=2544): allowiscous, imamelia
+  - [Castle Pillars](https://www.smwcentral.net/?p=section&a=details&id=13029): S.R.H.
+  - Original graphics: Nintendo
 - PIXI: See [main repo](https://github.com/JackTheSpades/SpriteToolSuperDelux)
 - Custom Info Box:
- - Original: Sonikku
- - Modifications to remove explosion, animations and VWF Dialogues support in favour of global messages: MarioFanGamer
+  - Original: Sonikku
+  - Modifications to remove explosion, animations and VWF Dialogues support in favour of global messages: MarioFanGamer
 - Remove Status Bar: lui
