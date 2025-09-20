@@ -261,9 +261,23 @@ It's... an unfortunate limitation but this has to do with
 how unoptimised SMW's stripe image routine is. 10 writes
 on a single scanline is certainly much for SMW (same
 reason why the background might glitch if you enable a
-32x32 block and have HDMA active). I'd say it's a
-necessary tradeoff without making the patch any more
-complex that it currently is.
+32x32 block and have HDMA active), though the main fault
+lies on Lunar Magic and its VRAM remapper which runs way
+too much code in v-blank.
+I'd say it's a necessary tradeoff without making the patch
+any more complex that it currently is.
+
+That being said, there are two ways to mitigate this:
+- Use FastROM. With it, the code runs slightly faster,
+  thus getting the code to be in v-blank. Does not work
+  with SA-1 applied.
+- Apply Kevin's Stripe Image Optimizer to your ROM. This
+  one applies to changes of the VRAM remapper to outside
+  of v-blank.
+
+There are many other ways to reduce the issues such as
+disabling the Status Bar (as the demo does) but these
+do affect the game itself.
 
 Do I must give you credits?
 ----------------------------------------------------------

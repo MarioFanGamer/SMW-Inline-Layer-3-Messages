@@ -63,15 +63,6 @@ incsrc "InlineLayer3Messages/Settings.asm"
 
 incsrc "InlineLayer3Messages/Core/Defines.asm"
 
-if !FixRetry && !GlobalMessages
-    print " Total amount of custom global messages limited to four messages."
-    !GlobalMessages = 0
-endif
-
-if not(!FastNmi)
-    warn "\!FastNmi has been disabled. It's recommend to have this enable to reduce black bars / HDMA messing up when a message (dis)appears."
-endif
-
 freecode
 if !GlobalMessages
 prot GlobalMessageSystem
@@ -87,6 +78,7 @@ endif
 if !GlobalMessages
 
 freedata
+GlobalMessageSystem:
 
 incsrc "InlineLayer3Messages/GlobalMsg/Macros.asm"
 incsrc "InlineLayer3Messages/GlobalMsg/Characters.asm"
@@ -96,4 +88,13 @@ endif
 
 print "--------------------------------"
 print "Freespace used: ",freespaceuse," bytes"
+
+if !FixRetry && !GlobalMessages
+    print "Note: Total amount of custom global messages limited to four messages."
+    !GlobalMessages = 0
+endif
+
+if not(!FastNmi)
+    warn "\!FastNmi has been disabled. It's recommend to have this enable to reduce black bars / HDMA messing up when a message (dis)appears."
+endif
 
