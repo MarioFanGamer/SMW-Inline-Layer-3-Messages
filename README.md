@@ -56,8 +56,29 @@ That means, the source code must be credited to the author, either his real name
 This primarily has organizational purposes: As a mod to a proprietary game, the license must not
 be viral like GPL since the project modifies a proprietary game and most licenses require not
 only attribution in the product but also the inclusion of the original license which is overkill
-for the SMW hacking community and easy to violate.
+for the SMW hacking community and far too easy to violate (most only bother to include a
+separate text file for credits).
 For this reason, I included a license which only needs to be passed down at source code
 distribution but not for when in use for the final product.
 
 Auxillary demo files (found under `demo`) are copyrighted by the respective owners.
+
+## Credits
+
+Code:
+- MarioFanGamer
+
+Demo:
+- Levels: MarioFanGamer
+- Messages: MarioFanGamer
+- Layer 3 conversions of SMW graphics:
+ - [Blue Mountains](https://www.smwcentral.net/?p=section&a=details&id=13031): S.R.H.
+ - [Cave](https://www.smwcentral.net/?p=section&a=details&id=13197): Link13
+ - [Clouds](https://www.smwcentral.net/?p=section&a=details&id=2544): allowiscous, imamelia
+ - [Castle Pillars](https://www.smwcentral.net/?p=section&a=details&id=13029): S.R.H.
+ - Original graphics: Nintendo
+- PIXI: See [main repo](https://github.com/JackTheSpades/SpriteToolSuperDelux)
+- Custom Info Box:
+ - Original: Sonikku
+ - Modifications to remove explosion, animations and VWF Dialogues support in favour of global messages: MarioFanGamer
+- Remove Status Bar: lui
