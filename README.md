@@ -1,6 +1,6 @@
 # Inline Layer 3 Messages for Super Mario World
 
-This repository is a mod for the Super NES game Super Mario World.
+This is a mod for the Super NES game Super Mario World.
 
 The game includes a basic message system which allows the game to draw a messages in a 8x18 box.
 Its main limination is that it can't work with BG3, one of the three background layers the SNES
@@ -21,6 +21,17 @@ Keep in mind that this readme is primarily a *repository* readme, explaining the
 The user manual is found under `Inline Layer 3 Messages - Readme`.
 
 
+## Building the demo
+As it is right now, the demo can't be really built. Part of the problem is that Lunar Magic doesn't
+allow you to easily export overworld and given that the demo isn't even necessary, I decided to
+not provide a build script for it as of now.
+I did provide all the necessary files for the levels themselves, though (graphics, custom info box,
+messages), but it's also limited in part because it depends on Lunar Magic code which is closed source
+and I also haven't provided a code to put down the messages.
+In fact, I may even split the demo into its own repository due to the effort required with an
+LM-independent solution.
+
+
 ## Contributing
 
 ### Code of conduct
@@ -36,9 +47,11 @@ The user manual is found under `Inline Layer 3 Messages - Readme`.
   - Also label ROM addresses
   - Use defines for indirectly accessible memory like VRAM
 - Comments:
-  - Always comment functions, particularly what it takes as input
+  - Always comment functions, particularly what it takes as input, spits out and which temporary memory is used how
   - Also use comments for code blocks
+  - Comments for (user) defines should preferably be placed 
   - Keep comments within codes at a minimum, it should be as self-explanatory as possible
+  - Keep comments consistently at the same line.
 - Indentation:
   - Always use four spaces for indentation, don't use tabs directly.
   - All code is generally indendented once.

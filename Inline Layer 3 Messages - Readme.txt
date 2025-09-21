@@ -101,7 +101,7 @@ anyway).
 So... how do I use global messages in the first place?
 ----------------------------------------------------------
 You first need to enable it (this is an exercise for you,
-the user on where to figure out).
+the user on where to figure it out).
 
 Once you've done that, you can define global messages
 however you want. They're found in the aforementioned
@@ -197,8 +197,8 @@ Lunar Magic.
 
 I even made sure it also works with colour addition (that
 includes the ghost house mist as well as level modes 1E
-and 1F) but colour half-addition and subtraction with
-layer 3 on subscreen is unfortunatelly difficult to solve
+and 1F) but colour subtraction with layer 3 on subscreen
+is unfortunatelly difficult to solve
 (it requires layer 3 to be on mainscreen but SMW by
 default doesn't use the main/subscreen mirrors to easily
 handle that, alongside separate mirros for windowing on
@@ -210,21 +210,16 @@ windowing, they should be avoided as well. Anything else
 (including what is commonly understood as HDMA i.e.
 colour gradients) still works.
 
-Retry? There are some complications between Retry and
-message box patches. However, I actually planned this
-with retry, though you have to enable Retry compatibility
-in the settings.
-What doesn't work, though, are global messages. This is
-because retry uses the message numbers to determine its
-state. This doesn't mean global messages can't work with
-retry ever but it does mean you need a separate message
-number for global messages. I didn't include such a
-compatibility because doing so means I need to make some
-additional hijacks with the Yoshi message and also
-guarantees modification for all other message code,
-alongside taking some freeRAM in the shadow RAM area
-(which is sparse and suitable for individual variables
-than the bulk this patch uses).
+Retry? I've tested this and as far as I know, it's
+definitively functional, although you should set
+"!FixRetry" in the user settings.
+The biggest limitation of retry are global messages. The
+way Retry works is that it uses message numbers to
+determine its state as well as whether a retry prompt
+appears rather than.
+Fortunately, Retry only reserves from message 0x08 onwards
+which translates to four global messages.
+
 (This also is one of the reasons why the NMI code
 originally wasn't as optimised as it could be because
 I need two bytes of freeRAM to preserve the VRAM
@@ -236,9 +231,8 @@ do. This includes patches which modify the intro message
 (such as automatic intro dismiss but that is something
 I also have included as an option for this very reason).
 This doesn't mean you can't use patches which add
-another message system (such as VWF Dialogues), they just
-can't replace vanilla messages (in fact, you don't need
-them all the time either).
+another message system (such as VWF Dialogues) on top,
+they just can't replace vanilla messages.
 
 Can I use the goal with layer 3 backgrounds as well?
 ----------------------------------------------------------
@@ -290,9 +284,9 @@ intended for when you modify this patch and want to merge
 the code back to the repo or take code FROM it and create
 your own public patch with it.
 This is different to most other BSD licenses (BSD0 as the
-notable exception) which require attribution/license
-inclusion even for binary distributions which is overkill
-for SMW hacking.
+notable exception which is basically PB) which require
+attribution/license inclusion even for binary
+distributions which is overkill for SMW hacking.
 
 tl;dr Don't mind this for non-code products.
 
