@@ -10,7 +10,7 @@ includefrom "InlineLayer3Messages"
 ; the main code.
 ;
 ; Due to some quirks / optimisations in the main code,
-; this MUST be inserted immediately after the main code.
+; this MUST be inserted immediately afterwards.
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

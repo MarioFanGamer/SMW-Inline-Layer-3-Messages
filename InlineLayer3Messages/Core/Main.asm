@@ -245,6 +245,9 @@ endif
     PLB
     bank auto
     SEP #$30
+    LDA $02
+    CMP #$14
+    BEQ ..OneWrite
     INC MessageTimer
 RTS
 
@@ -276,6 +279,7 @@ RTS
     PLB
     bank auto
 
+..OneWrite:
 ; Initialise next state
     SEP #$30
     INC MessageState

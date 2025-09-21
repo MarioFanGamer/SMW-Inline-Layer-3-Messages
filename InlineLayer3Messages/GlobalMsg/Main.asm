@@ -1,5 +1,7 @@
 includefrom "InlineLayer3Messages"
 
+print " Global messages: $",pc
+
 !CurrentMessageID = $10000
 
 incsrc "../Messages.asm"
@@ -10,6 +12,8 @@ endif
 
 !GlobalMessage_Count = 0
 !GlobalMessage_SkippedMsg = 0
+
+print " Global message pointers: $",pc
 
 GlobalMessagePointers:
 for i = 0..!GlobalMessage_LargestID+1

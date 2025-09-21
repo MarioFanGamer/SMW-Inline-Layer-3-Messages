@@ -95,3 +95,4 @@ Demo:
   - Original: Sonikku
   - Modifications to remove explosion, animations and VWF Dialogues support in favour of global messages: MarioFanGamer
 - Remove Status Bar: lui
+- Start+Select Advanced: MarioFanGamer

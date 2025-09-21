@@ -31,11 +31,11 @@
 ;   - "folder/": Folder named "folder"
 ; In general, UberASM will look into the directory of the
 ; inserting file (e.g. if this is inserted as level code,
-; this will look into "levels".
+; this will look into "levels").
 ; As such, I go down one folder for the UberASM main folder.
 ; However, I also I typically include UberASM in its own
 ; directory when paired together with the hack which is
-; why, I go down two folders.
+; why I go down two folders.
 ; Not everyone will use the same folder layout, though,
 ; which is why keep this a define.
 !IncludeDirectory = "../../InlineLayer3Messages/"

@@ -183,7 +183,6 @@ I can think of two causes:
  - you didn't save a message in Lunar Magic at least once.
 
 Who can read error messages has got a clear advantage.
-
 Any known incompatibilities?
 ----------------------------------------------------------
 Obviously layer 3 tilemaps are now usable. Only if the
@@ -241,16 +240,6 @@ Can I use the goal with layer 3 backgrounds as well?
 Sadly not because the goal can't be easily put inline
 (not to mention I'd create another patch for that).
 
-What about the BPS?
-----------------------------------------------------------
-That's just a test ROM showing various application within
-the vanilla game (excluding custom layer 3 backgrounds,
-of course).
-
-Oh, and give credits to allowiscous, imamelia, Berk and
-Link13 for layer 3 conversions for some of SMW's
-layer 2 backgrounds!
-
 The message box glitches for one frame!
 ----------------------------------------------------------
 It's... an unfortunate limitation but this has to do with
@@ -274,6 +263,24 @@ That being said, there are two ways to mitigate this:
 There are many other ways to reduce the issues such as
 disabling the Status Bar (as the demo does) but these
 do affect the game itself.
+
+What about the BPS?
+----------------------------------------------------------
+That's just a test ROM showing various application within
+the vanilla game (excluding custom layer 3 backgrounds,
+of course).
+
+Oh, and give credits to allowiscous, imamelia, Berk and
+Link13 for layer 3 conversions for some of SMW's
+layer 2 backgrounds, Sonikku for the custom info box and
+Lui for Disable Status Bar!
+
+I don't want to play through the first level of the demo
+again!
+----------------------------------------------------------
+You can use start+select to exit out of the level and
+beat it that way. The ability is only active for the first
+level, though.
 
 Do I must give you credits?
 ----------------------------------------------------------
