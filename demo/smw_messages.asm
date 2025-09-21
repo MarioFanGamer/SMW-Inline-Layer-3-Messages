@@ -71,8 +71,8 @@ db "the  other is also"
 db "complex        and"
 db "disappearing layer"
 db "3  may  look weird"
-db "and the last oneis"
-db "complex as well.",$FE
+db "and  the  last one"
+db "is complex as well"
 
 Message103_2:
 db "The  VWF solutions"
@@ -135,7 +135,7 @@ db "Message        Box"
 db "does)...,",$FE
 
 Message106_2:
-db "disable      layer"
+db "...  disable layer"
 db "3    during    the"
 db "message        and"
 db "restore         it"

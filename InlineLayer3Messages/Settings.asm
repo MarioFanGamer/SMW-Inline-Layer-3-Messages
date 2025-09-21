@@ -1,3 +1,5 @@
+include
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
 ; Inline Layer 3 Messages user settings
@@ -30,7 +32,7 @@
 
 ; These can stay in WRAM because code is handled by SNES
 !MessageBuff        = $7FC700       ; (144 bytes) Writes the message into a buffer
-!Layer3Buff         = $7FAC90       ; (1024 bytes) Tiles
+!Layer3Buff         = $7FA600       ; (1280 bytes) Backup of the layer 3 tilemap
 
 ; Message defines
 

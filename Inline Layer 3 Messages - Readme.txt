@@ -86,7 +86,9 @@ processed by SA-1 (basically, changing it to banks $40/$41
 is a waste of the more limited BW-RAM).
 
 "!Layer3Buff" is the buffered part of the layer 3 tilemap,
-the rows were the message get overwritten.
+the rows were the message get overwritten. This one
+requires you to reserve 1280 bytes of RAM (2 bytes/tile *
+64 tiles/per * 10 rows)
 This variable is recommend to be in WRAM even if you use
 SA-1 because it's only needed for v-blank code which
 can't run in SA-1.

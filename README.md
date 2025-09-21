@@ -27,7 +27,7 @@ allow you to easily export overworld and given that the demo isn't even necessar
 not provide a build script for it as of now.
 I did provide all the necessary files for the levels themselves, though (graphics, custom info box,
 messages), but it's also limited in part because it depends on Lunar Magic code which is closed source
-and I also haven't provided a code to put down the messages.
+and I also haven't provided a code to insert SMW messages into the ROM.
 In fact, I may even split the demo into its own repository due to the effort required with an
 LM-independent solution.
 
@@ -78,7 +78,7 @@ Auxillary demo files (found under `demo`) are copyrighted by the respective owne
 
 ## Credits
 
-Code:
+Inline Layer 3 Messages (main code):
 - MarioFanGamer
 
 Demo:
