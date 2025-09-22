@@ -8,7 +8,12 @@ db "are defined within"
 db "the    patch   but"
 db "otherwise function"
 db "like  Lunar  Magic"
-db "messages."
+db "messages.    Also,"
+db "this   message  is"
+db "clearly  too  long"
+db "and won't fit into"
+db "a    single    SMW"
+db "message at all.   "
 
 
 %GlobalMessageEnd()
@@ -30,6 +35,6 @@ db "justified messages"
 db "(each  row  has  a"
 db "fixed width, there"
 db "is   no  space  at"
-db "either edge)."
+db "either edge).     "
 
 %GlobalMessageEnd()
