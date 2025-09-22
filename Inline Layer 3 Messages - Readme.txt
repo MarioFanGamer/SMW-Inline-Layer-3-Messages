@@ -14,10 +14,10 @@ layer 3 image.
 What are the advantages to other layer 3 preserving
 messages?
 ----------------------------------------------------------
-The most important point is that the patch is still a
-layer 3 tilemap and reuses SMW's messages. As a result,
+The most important advantage is that the patch still uses
+a layer 3 tilemap and reuses SMW's messages. As a result,
 you still can use Lunar Magic to write messages unlike
-e.g. VWF Dialoguess or bg4vwf which requires you to
+e.g. VWF Dialoguess or bg4vwf which require you to
 repatch them each time you want to add a new message.
 It also is far simpler than Sprite Message Box, requiring
 only 1424 bytes of freeRAM (SSB uses 4096 for the decomp
@@ -31,14 +31,17 @@ There's a whole folder of files!
 The patch is fairly complex and with so many changes, you
 do lose an overview for all the stuff. Fortunately, most
 of it is irreleavant and the only releavnt user file is
-the patch file "InlineLayer3Message.asm" as well as
-"Messages.asm" inside "InlineLayer3Messages/GlobalMsg".
+the patch file "InlineLayer3Message.asm",
+"Settings.asm" and "Messages.asm" inside
+"InlineLayer3Messages/" as well as "UberASM/".
 
 The former is the main patch file, the file you insert
-with Asar. It contains all the user customisations needed
-which is safe to do as such. There are more defines used
-in the patch but they're only interesting for technical
-users.
+with Asar.
+
+The middle one contains all the user customisations
+needed which is safe to do as such. There are more defines
+used in the patch but they're only interesting for
+technical users.
 The latter is the message file for global messages, only
 used when global messages are.
 
