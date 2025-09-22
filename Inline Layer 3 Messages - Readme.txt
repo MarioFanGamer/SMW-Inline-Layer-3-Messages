@@ -43,7 +43,7 @@ needed which is safe to do as such. There are more defines
 used in the patch but they're only interesting for
 technical users.
 The latter is the message file for global messages, only
-used when global messages are.
+used when global messages are enabled.
 
 Lastly, there is the good ol' UberASM folder. This
 contains the NMI code, the code which backs up the
