@@ -36,7 +36,7 @@ LM-independent solution.
 
 ### Code of conduct
 - Be polite, don't insult others
-- Any contribution for the main patch will be licensed under the BSD1 license (see [LICENSE] for more information)
+- Any contribution for the main patch will be licensed under the BSD1 license (see [LICENSE](LICENSE) for more information)
 
 ### Syntax
 - Labels are generally CamelCase, although underscores can be used for namespaces and sublabel access.
